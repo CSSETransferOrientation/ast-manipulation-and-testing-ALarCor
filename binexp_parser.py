@@ -3,7 +3,6 @@ import os
 from os.path import join as osjoin
 
 import unittest
-
 from enum import Enum
 
 # Use these to distinguish node types, note that you might want to further
@@ -49,7 +48,6 @@ class BinOpAst():
     def prefix_str(self):
         """
         Convert the BinOpAst to a prefix notation string.
-        Make use of new Python 3.10 case!
         """
         match self.type:
             case NodeType.number:
@@ -60,17 +58,16 @@ class BinOpAst():
     def infix_str(self):
         """
         Convert the BinOpAst to a prefix notation string.
-        Make use of new Python 3.10 case!
         """
         match self.type:
             case NodeType.number:
                 return self.val
             case NodeType.operator:
                 return '(' + self.left.infix_str() + ' ' + self.val + ' ' + self.right.infix_str() + ')'
+
     def postfix_str(self):
         """
         Convert the BinOpAst to a prefix notation string.
-        Make use of new Python 3.10 case!
         """
         match self.type:
             case NodeType.number:
@@ -83,36 +80,36 @@ class BinOpAst():
         Reduce additive identities
         x + 0 = x
         """
-        # IMPLEMENT ME!
-        pass
-                        
+        if self.type == NodeType.operator and self.val == '+':
+            if self.left.type == NodeType.number and self.left.val == '0':
+                return self.right
+            if self.right.type == NodeType.number and self.right.val == '0':
+                return self.left
+        return self
+
     def multiplicative_identity(self):
         """
         Reduce multiplicative identities
         x * 1 = x
         """
-        # IMPLEMENT ME!
-        pass
-    
-    
+        if self.type == NodeType.operator and self.val == '*':
+            if self.left.type == NodeType.number and self.left.val == '1':
+                return self.right
+            if self.right.type == NodeType.number and self.right.val == '1':
+                return self.left
+        return self
+
     def mult_by_zero(self):
         """
         Reduce multiplication by zero
         x * 0 = 0
         """
-        # Optionally, IMPLEMENT ME! (I'm pretty easy)
-        pass
-    
-    def constant_fold(self):
-        """
-        Fold constants,
-        e.g. 1 + 2 = 3
-        e.g. x + 2 = x + 2
-        """
-        # Optionally, IMPLEMENT ME! This is a bit more challenging. 
-        # You also likely want to add an additional node type to your AST
-        # to represent identifiers.
-        pass            
+        if self.type == NodeType.operator and self.val == '*':
+            if self.left.type == NodeType.number and self.left.val == '0':
+                return BinOpAst(['0'])
+            if self.right.type == NodeType.number and self.right.val == '0':
+                return BinOpAst(['0'])
+        return self              
 
     def simplify_binops(self):
         """
@@ -122,11 +119,28 @@ class BinOpAst():
         3) Extra #1: Multiplication by 0, e.g. x * 0 = 0
         4) Extra #2: Constant folding, e.g. statically we can reduce 1 + 1 to 2, but not x + 1 to anything
         """
-        self.additive_identity()
-        self.multiplicative_identity()
-        self.mult_by_zero()
-        self.constant_fold()
+        self.left = self.left.simplify_binops() if self.left else None
+        self.right = self.right.simplify_binops() if self.right else None
+        self = self.additive_identity()
+        self = self.multiplicative_identity()
+        self = self.mult_by_zero()
+        
+        return self
 
 
 if __name__ == "__main__":
-    unittest.main()
+    # Example tests (unittest can be more elaborate)
+    tests = [
+        (['+', '1', '+', '2', '0'], '+ 1 2'),
+        (['+', '1', '*', '2', '1'], '+ 1 2'),
+        (['*', '1', '*', '3', '1'], '3'),
+        (['*', '1', '0'], '0'),
+        (['+', '1', '*', '0', '1'], '1')
+    ]
+
+    for test_input, expected_output in tests:
+        ast = BinOpAst(test_input)
+        simplified_ast = ast.simplify_binops()
+        assert simplified_ast.prefix_str() == expected_output, f"Test failed for input {test_input}, got {simplified_ast.prefix_str()}"
+
+    print("All tests passed.")
