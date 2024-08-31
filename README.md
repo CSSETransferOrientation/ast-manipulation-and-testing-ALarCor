@@ -1,4 +1,19 @@
-# Binary Operator Simplifier 
+#  Submission
+
+## Tasks Completed
+
+I Completed the Arithmetic Identity, the Multiplicative Identity and the Multiply by zero. I included some tests in the .py file to test it all. 
+
+## Things Learned
+
+I learned how to use Github more efficiently and implement test for my code which will be incredibly helpful in the future as I grow as a developer. This is in addition to the programming knowledge which I gained by learning how to implement different types of algorithms, use VSCode and Github repositories which I will be continuing to use for future projects. 
+
+## Difficulties witht the project
+
+The most difficult thing for me was learning how github works to set up this project. If it was just the code that I have to work on, or only github that I need to figure out it might not be so bad. However the combination of things makes it confusing for me to know where to start or how I might get it to work. I am not as efficient when I learn things on my own as I tend to look for too many different paths to start with, as opposed to having a clear definition and example of what I need to do.
+
+
+# Instructions on the Binary Operator Simplifier Below
 
 
 ## Purpose 
